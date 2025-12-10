@@ -1,4 +1,4 @@
-pipeline {
+ppipeline {
     agent any
 
     stages {
@@ -18,16 +18,14 @@ pipeline {
             }
         }
 
-         stage("Run unit tests only") {
-    steps {
-        sh '''
-            chmod +x mvnw
-            ./mvnw test \
-                -Dspring.docker.compose.skip.in-tests=true \
-                -Dtest="*Tests,!*IntegrationTests,*Test"
-        '''
-          }
+        stage("Run unit tests only") {
+            steps {
+                sh """
+                    mvn test \
+                        -Dspring.docker.compose.skip.in-tests=true \
+                        -Dtest='*Tests,!*IntegrationTests,*Test'
+                """
+            }
         }
-
-      }         
-   }
+    }
+}
