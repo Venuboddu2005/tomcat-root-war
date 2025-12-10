@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        BUILD_VERSION = "1.0.${env.BUILD_NUMBER}-SNAPSHOT"
+    }
+
     stages {
 
         stage("Build code") {
@@ -69,11 +73,12 @@ pipeline {
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         nexusUrl: 'nexus:8081',
-                        repository: 'maven-releases',  // ✅ Correct for non-snapshot
+
+                        repository: 'maven-snapshots',  // ✅ SNAPSHOT repo allows redeploy
                         credentialsId: 'nexus-creds',
 
                         groupId: 'com.akalashnykov',
-                        version: '1.0',                // ✅ Valid RELEASE version
+                        version: BUILD_VERSION,          // ✅ Auto version: 1.0.<build>-SNAPSHOT
 
                         artifacts: [
                             [
@@ -88,29 +93,22 @@ pipeline {
             }
         }
 
+        stage("Deploy-Dev") {
+            steps {
+                echo "Deploying to DEV servers..."
+            }
+        }
 
-                   stage("Deploy-Dev"){
-                    steps{
+        stage("Deploy-UAT") {
+            steps {
+                echo "Deploying to UAT servers..."
+            }
+        }
 
-                        echo "Depolying.... Dev servers..."
-                    }
-                
-                   }
-
-                stage("Deploy-UAT"){
-                    steps{
-
-                        echo "Deploying....UAT servers..."
-                    }
-                }
-                  
-                stage("Deploy-PROD"){
-                    steps{
-
-                        echo "Deploying....PROD servers..."
-                    }
-                }  
-             
-            
+        stage("Deploy-PROD") {
+            steps {
+                echo "Deploying to PROD servers..."
+            }
+        }
     }
 }
