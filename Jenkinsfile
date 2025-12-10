@@ -10,11 +10,23 @@ pipeline {
                 """
             }
         }
+pipeline {
+    agent any
+
+    stages {
+
+        stage("Build code") {
+            steps {
+                sh """
+                    mvn clean package
+                """
+            }
+        }
 
         stage("Run Jetty") {
             steps {
                 sh """
-                    nohup mvn jetty:run > jetty.log 2>&1 &
+                    nohup mvn jetty:run > jetty.log 2>&1 & 
                     sleep 5
                 """
             }
@@ -57,36 +69,36 @@ pipeline {
                         if (qg.status != 'OK') {
                             error "❌ Quality Gate Failed: ${qg.status}"
                         }
-               
-                      }
+                    }
+                }
+            }
+        }
 
-                      stage("Upload-Artifacts-Nexus") {
-    steps {
-        script {
-            nexusArtifactUploader(
-                nexusVersion: 'nexus3',
-                protocol: 'http',
-                nexusUrl: 'nexus:8081',
-                repository: 'maven-snapshots',
-                credentialsId: 'nexus-creds',
-
-                groupId: 'org.springframework.samples',
-                version: '4.0.0-SNAPSHOT',
-
-                artifacts: [
-                    [
-                        artifactId: 'tomcat-root-war',
-                        classifier: '',
-                        file: 'target/tomcat-root-war-4.0.0-SNAPSHOT.jar',
-                        type: 'jar'
-                    ]
-                ]
-            )
+        stage("Upload-Artifacts-Nexus") {
+            steps {
+                script {
+                    nexusArtifactUploader(
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        nexusUrl: 'nexus:8081',
+                        repository: 'maven-snapshots',
+                        credentialsId: 'nexus-creds',
+                        groupId: 'org.springframework.samples',
+                        version: '4.0.0-SNAPSHOT',
+                        artifacts: [
+                            [
+                                artifactId: 'tomcat-root-war',
+                                classifier: '',
+                                file: 'target/tomcat-root-war-4.0.0-SNAPSHOT.jar',
+                                type: 'jar'
+                            ]
+                        ]
+                    )
+                }
+            }
         }
     }
 }
- }
-}
-        }
- }
-}
+
+    }
+}        
