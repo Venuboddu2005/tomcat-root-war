@@ -18,6 +18,17 @@ pipeline {
             }
         }
 
-    
+         stage("Run unit tests only"){
+
+            steps {
+                sh """
+                    ./mvnw test \
+                    -Dspring.docker.compose.skip.in-tests=true \
+                    -Dtest='*Tests,!*IntegrationTests,*Test' 
+                """   
+                     
+            }
+         }
+
     }
 }
