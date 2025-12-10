@@ -24,8 +24,9 @@ pipeline {
             steps {
                 sh """
                     mvn test \
-                        -Dspring.docker.compose.skip.in-tests=true \
-                        -Dtest=*Tests,!*IntegrationTests,*Test
+                        -Dspring.docker.compose.skip-in-tests=true \
+                        -Dtest=*Tests,!*IntegrationTests,*Test \
+                        -DfailIfNoTests=false
                 """
             }
         }
