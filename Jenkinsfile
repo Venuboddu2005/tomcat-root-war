@@ -10,23 +10,11 @@ pipeline {
                 """
             }
         }
-pipeline {
-    agent any
-
-    stages {
-
-        stage("Build code") {
-            steps {
-                sh """
-                    mvn clean package
-                """
-            }
-        }
 
         stage("Run Jetty") {
             steps {
                 sh """
-                    nohup mvn jetty:run > jetty.log 2>&1 & 
+                    nohup mvn jetty:run > jetty.log 2>&1 &
                     sleep 5
                 """
             }
@@ -99,6 +87,3 @@ pipeline {
         }
     }
 }
-
-    }
-}        
