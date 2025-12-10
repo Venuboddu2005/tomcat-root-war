@@ -63,27 +63,30 @@ pipeline {
         }
 
         stage("Upload-Artifacts-Nexus") {
-            steps {
-                script {
-                    nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: 'nexus:8081',
-                        repository: 'maven-snapshots',
-                        credentialsId: 'nexus-creds',
-                        groupId: 'org.springframework.samples',
-                        version: '4.0.0-SNAPSHOT',
-                        artifacts: [
-                            [
-                                artifactId: 'tomcat-root-war',
-                                classifier: '',
-                                file: 'target/tomcat-root-war-4.0.0-SNAPSHOT.jar',
-                                type: 'jar'
-                            ]
-                        ]
-                    )
-                }
-            }
+    steps {
+        script {
+            nexusArtifactUploader(
+                nexusVersion: 'nexus3',
+                protocol: 'http',
+                nexusUrl: 'nexus:8081',
+                repository: 'maven-snapshots',
+                credentialsId: 'nexus-creds',
+
+                groupId: 'com.akalashnykov',
+                version: '1.0',
+
+                artifacts: [
+                    [
+                        artifactId: 'tomcat-root-war',
+                        classifier: '',
+                        file: 'target/ROOT.war',
+                        type: 'war'
+                    ]
+                ]
+            )
         }
     }
+}
+
+}
 }
