@@ -30,5 +30,29 @@ pipeline {
                 """
             }
         }
+        
+        stage("Sonar Scan") {
+    steps {
+        script {
+            withSonarQubeEnv('sonar-server-01') {
+                sh """
+                    sonar-scanner \
+                        -Dsonar.projectKey=tomcat-root-war \
+                        -Dsonar.projectName=tomcat-root-war \
+                        -Dsonar.sources=src/main/java \
+                        -Dsonar.java.binaries=target/classes \
+                        -Dsonar.sourceEncoding=UTF-8 \
+                        -Dsonar.host.url=$SONAR_HOST_URL
+                """
+            }
+
+            // Wait for Quality Gate result
+            timeout(time: 2, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: false
+            }
+        }
+    }
+}
+
     }
 }
